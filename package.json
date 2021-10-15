@@ -1,0 +1,30 @@
+{
+  "name": "ogp-fetcher",
+  "version": "0.0.1",
+  "description": "Library to fetch OGB",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  },
+  "scripts": {
+    "test": "test",
+    "build": "tsc",
+    "prepublishOnly": "yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TakahiroHimi/ogp-fetcher.git"
+  },
+  "keywords": [
+    "ogp",
+    "fetch"
+  ],
+  "author": "TakahiroHimi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TakahiroHimi/ogp-fetcher/issues"
+  },
+  "homepage": "https://github.com/TakahiroHimi/ogp-fetcher#readme"
+}

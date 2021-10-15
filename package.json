@@ -4,6 +4,9 @@
   "description": "Library to fetch OGB",
   "main": "index.js",
   "types": "index.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.0.2",

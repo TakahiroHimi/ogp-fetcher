@@ -1,6 +1,11 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import { JSDOM } from "jsdom";
 
+/**
+ *
+ * @param targetUrls
+ * @returns ogp list
+ */
 export const fetchOgp = async (targetUrls: string[]) => {
   const headers: AxiosRequestHeaders = { "User-Agent": "bot" };
 
@@ -9,24 +14,40 @@ export const fetchOgp = async (targetUrls: string[]) => {
   });
 
   const responses = await Promise.all(fetches);
+  const htmlList = responses.reduce((prev: string[], res) => {
+    if (typeof res.data !== "string") return prev;
+    return [...prev, res.data];
+  }, []);
 
-  const ogpsList = responses.reduce(
-    (prev: { [key: string]: string }[], res) => {
-      if (typeof res.data !== "string") return prev;
-      const dom = new JSDOM(res.data);
-      const meta = dom.window.document.head.querySelectorAll("meta");
+  const ogps = parseOgp(htmlList);
 
-      const ogps = ogpFilter(meta);
-
-      return [...prev, ogps];
-    },
-    []
-  );
-
-  return ogpsList;
+  return ogps;
 };
 
-const ogpFilter = (metaElements: NodeListOf<HTMLMetaElement>) => {
+/**
+ *
+ * @param htmlList
+ * @returns ogp list
+ */
+export const parseOgp = (htmlList: string[]) => {
+  const ogps = htmlList.reduce((prev: { [key: string]: string }[], html) => {
+    const dom = new JSDOM(html);
+    const meta = dom.window.document.head.querySelectorAll("meta");
+
+    const ogps = ogpFilter(meta);
+
+    return [...prev, ogps];
+  }, []);
+
+  return ogps;
+};
+
+/**
+ *
+ * @param metaElements
+ * @returns ogp object
+ */
+export const ogpFilter = (metaElements: NodeListOf<HTMLMetaElement>) => {
   const ogps = [...Array(metaElements.length).keys()].reduce(
     (prev: { [key: string]: string }, i) => {
       const property = metaElements.item(i).getAttribute("property")?.trim();
@@ -39,3 +60,5 @@ const ogpFilter = (metaElements: NodeListOf<HTMLMetaElement>) => {
   );
   return ogps;
 };
+
+export default fetchOgp;

@@ -1,3 +1,1 @@
-import { fetchOgp } from "./fetchOgp";
-
-export default fetchOgp;
+export * from "./fetchOgp";

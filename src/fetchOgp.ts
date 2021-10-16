@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 
 /**
  *
- * @param targetUrls
+ * @param targetUrls fetch target url list
  * @returns ogp list
  */
 export const fetchOgp = async (targetUrls: string[]) => {
@@ -14,37 +14,45 @@ export const fetchOgp = async (targetUrls: string[]) => {
   });
 
   const responses = await Promise.all(fetches);
-  const htmlList = responses.reduce((prev: string[], res) => {
-    if (typeof res.data !== "string") return prev;
-    return [...prev, res.data];
-  }, []);
+  const htmlList = responses.reduce(
+    (prev: { url: string; html: string }[], res) => {
+      if (!res.config.url || typeof res.data !== "string") return prev;
+      return [...prev, { url: res.config.url, html: res.data }];
+    },
+    []
+  );
 
-  const ogps = parseOgp(htmlList);
+  const ogps = htmlList.map((html) => {
+    return {
+      url: html.url,
+      ...parseOgp([html.html])[0],
+    };
+  });
 
   return ogps;
 };
 
 /**
  *
- * @param htmlList
+ * @param htmlList fetch target url text list
  * @returns ogp list
  */
 export const parseOgp = (htmlList: string[]) => {
-  const ogps = htmlList.reduce((prev: { [key: string]: string }[], html) => {
+  const ogps = htmlList.map((html) => {
     const dom = new JSDOM(html);
     const meta = dom.window.document.head.querySelectorAll("meta");
 
     const ogps = ogpFilter(meta);
 
-    return [...prev, ogps];
-  }, []);
+    return ogps;
+  });
 
   return ogps;
 };
 
 /**
  *
- * @param metaElements
+ * @param metaElements filter target ogp list object
  * @returns ogp object
  */
 export const ogpFilter = (metaElements: NodeListOf<HTMLMetaElement>) => {

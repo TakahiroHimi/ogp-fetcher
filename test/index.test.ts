@@ -7,6 +7,7 @@ describe("test", () => {
       fetchOgp(["https://takahirohimi.github.io/ogp-fetcher/"])
     ).resolves.toStrictEqual([
       {
+        url: "https://takahirohimi.github.io/ogp-fetcher/",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -27,6 +28,7 @@ describe("test", () => {
       ])
     ).resolves.toStrictEqual([
       {
+        url: "https://takahirohimi.github.io/ogp-fetcher/",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -37,6 +39,7 @@ describe("test", () => {
         ["og:image"]: "https://example.com/image.png",
       },
       {
+        url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
         ["og:title"]: "footitle",
         ["og:description"]: "foodescription",
         ["og:locale"]: "foolocale",

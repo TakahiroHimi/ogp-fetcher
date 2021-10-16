@@ -1,12 +1,19 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import { JSDOM } from "jsdom";
 
+export type OGPFetchResult = {
+  url: string;
+  [key: string]: string;
+}[];
+
 /**
  *
  * @param targetUrls fetch target url list
  * @returns ogp list
  */
-export const fetchOgp = async (targetUrls: string[]) => {
+export const fetchOgp = async (
+  targetUrls: string[]
+): Promise<OGPFetchResult> => {
   const headers: AxiosRequestHeaders = { "User-Agent": "bot" };
 
   const fetches = targetUrls.map((url) => {
@@ -57,7 +64,7 @@ export const parseOgp = (htmlList: string[]) => {
  */
 export const ogpFilter = (metaElements: NodeListOf<HTMLMetaElement>) => {
   const ogps = [...Array(metaElements.length).keys()].reduce(
-    (prev: { [key: string]: string }, i) => {
+    (prev: { [property: string]: string }, i) => {
       const property = metaElements.item(i).getAttribute("property")?.trim();
       if (!property) return prev;
       const content = metaElements.item(i).getAttribute("content");

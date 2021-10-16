@@ -1,6 +1,3 @@
-const hello = (msg: string) => {
-  console.log(msg);
-  return true;
-};
+import { fetchOgp } from "./fetchOgp";
 
-export default hello;
+export default fetchOgp;

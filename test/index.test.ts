@@ -1,7 +1,7 @@
-import hello from "../src/index";
+import fetchOGP from "../src/index";
 
 describe("test", () => {
   test("test", () => {
-    expect(hello("test")).toBe(true);
+    return expect(fetchOGP(["https://shs.sh/"])).resolves.toBe(true);
   });
 });

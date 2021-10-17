@@ -1,7 +1,7 @@
 {
   "name": "ogp-fetcher",
-  "version": "1.4.0",
-  "description": "Library to fetch OGB",
+  "version": "1.4.1",
+  "description": "A simple library for OGP fetching",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

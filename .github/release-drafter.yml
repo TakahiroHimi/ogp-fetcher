@@ -17,6 +17,9 @@ autolabeler:
   - label: "enhancement"
     branch:
       - '/feature\/.+/'
+  - label: "chore"
+    branch:
+      - '/chore\/.+/'
 categories:
   - title: "🚀 Features"
     labels:

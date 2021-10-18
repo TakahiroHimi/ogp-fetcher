@@ -17,22 +17,30 @@ export const fetchOgp = async (
   const headers: AxiosRequestHeaders = { "User-Agent": "bot" };
 
   const fetches = targetUrls.map((url) => {
-    return axios.get(encodeURI(url), { headers: headers });
+    return axios
+      .get<{ data: string }>(encodeURI(url), {
+        headers: headers,
+      })
+      .catch(() => {
+        return undefined;
+      });
   });
 
   const responses = await Promise.all(fetches);
-  const htmlList = responses.reduce(
-    (prev: { url: string; html: string }[], res) => {
-      if (!res.config.url || typeof res.data !== "string") return prev;
-      return [...prev, { url: res.config.url, html: res.data }];
+  const targets = responses.reduce(
+    (prev: { url: string; html?: string }[], res, i) => {
+      const url = targetUrls[i] ?? "";
+      if (!res?.data || typeof res?.data !== "string")
+        return [...prev, { url: url }];
+      return [...prev, { url: url, html: res.data }];
     },
     []
   );
 
-  const ogps = htmlList.map((html) => {
+  const ogps = targets.map((target) => {
     return {
-      url: html.url,
-      ...parseOgp([html.html])[0],
+      url: target.url,
+      ...parseOgp([target.html ?? ""])[0],
     };
   });
 

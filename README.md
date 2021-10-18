@@ -6,9 +6,7 @@
 
 ```bash
 npm install ogp-fetcher
-
 # or
-
 yarn add ogp-fetcher
 ```
 

@@ -3,23 +3,6 @@ tag-template: "v$RESOLVED_VERSION"
 exclude-labels:
   - "release"
   - "auto"
-autolabeler:
-  - label: "docs"
-    files:
-      - "*.md"
-    branch:
-      - '/docs{0,1}\/.+/'
-  - label: "bug"
-    branch:
-      - '/fix\/.+/'
-    title:
-      - "/fix/i"
-  - label: "enhancement"
-    branch:
-      - '/feature\/.+/'
-  - label: "chore"
-    branch:
-      - '/chore\/.+/'
 categories:
   - title: "🚀 Features"
     labels:

@@ -20,6 +20,18 @@ describe("test", () => {
     ]);
   });
 
+  test("fetch ogp　non-existent URL", () => {
+    return expect(
+      fetchOgp([
+        "https://takahirohimi.github.io/ogp-fetcher/non-existent-page.html",
+      ])
+    ).resolves.toStrictEqual([
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/non-existent-page.html",
+      },
+    ]);
+  });
+
   test("fetch multiple ogp", () => {
     return expect(
       fetchOgp([
@@ -48,6 +60,42 @@ describe("test", () => {
         ["og:image:width"]: "300",
         ["og:image:height"]: "200",
         ["og:image"]: "https://example.com/foo.png",
+      },
+    ]);
+  });
+
+  test("fetch multiple ogp contains a non-existent URL", () => {
+    return expect(
+      fetchOgp([
+        "https://takahirohimi.github.io/ogp-fetcher/",
+        "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        "https://takahirohimi.github.io/ogp-fetcher/non-existent-page.html",
+      ])
+    ).resolves.toStrictEqual([
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["og:title"]: "title",
+        ["og:description"]: "description",
+        ["og:locale"]: "locale",
+        ["og:type"]: "type",
+        ["og:url"]: "https://example.com",
+        ["og:image:width"]: "200",
+        ["og:image:height"]: "100",
+        ["og:image"]: "https://example.com/image.png",
+      },
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["og:title"]: "footitle",
+        ["og:description"]: "foodescription",
+        ["og:locale"]: "foolocale",
+        ["og:type"]: "footype",
+        ["og:url"]: "https://example.com/foo",
+        ["og:image:width"]: "300",
+        ["og:image:height"]: "200",
+        ["og:image"]: "https://example.com/foo.png",
+      },
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/non-existent-page.html",
       },
     ]);
   });

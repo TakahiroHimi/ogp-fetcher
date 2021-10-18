@@ -24,8 +24,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "lint": "eslint --fix 'src/**/*.ts'",
-    "prepublishOnly": "yarn build"
+    "lint": "eslint --fix 'src/**/*.ts'"
   },
   "jest": {
     "moduleFileExtensions": [

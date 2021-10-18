@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "release"
+
+jobs:
+  npm:
+    name: Publish package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          registry-url: "https://registry.npmjs.org/"
+      - name: Prepare
+        run: |
+          yarn --frozen-lockfile
+          yarn build
+      - name: Set released version to env
+        run: node -p -e '`RELEASED_PACKAGE_VERSION=${require("./package.json").version}`' >> $GITHUB_ENV
+      - name: Create release draft on GitHub
+        uses: release-drafter/release-drafter@v5
+        with:
+          version: ${{ env.RELEASED_PACKAGE_VERSION }}
+          name: ${{ env.RELEASED_PACKAGE_VERSION }}
+          tag: ${{ env.RELEASED_PACKAGE_VERSION }}
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

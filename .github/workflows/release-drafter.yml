@@ -3,9 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
-    tags:
-      - "release"
+      - production
 
 jobs:
   npm:

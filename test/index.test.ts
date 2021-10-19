@@ -1,13 +1,67 @@
 import { JSDOM } from "jsdom";
-import fetchOgp, { ogpFilter, parseOgp } from "../src/fetchOgp";
+import fetchOgp, {
+  createFaviconSrcURL,
+  fetchOgpFromMd,
+  ogpFilter,
+  parseOgp,
+} from "../src/fetchOgp";
 
-describe("test", () => {
-  test("fetch ogp", () => {
+describe("src/fetchOgp", () => {
+  test("fetchOgpFromMd", () => {
+    return expect(fetchOgpFromMd(testMdText)).resolves.toStrictEqual([
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
+        ["og:title"]: "title",
+        ["og:description"]: "description",
+        ["og:locale"]: "locale",
+        ["og:type"]: "type",
+        ["og:url"]: "https://example.com",
+        ["og:image:width"]: "200",
+        ["og:image:height"]: "100",
+        ["og:image"]: "https://example.com/image.png",
+      },
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
+        ["og:title"]: "footitle",
+        ["og:description"]: "foodescription",
+        ["og:locale"]: "foolocale",
+        ["og:type"]: "footype",
+        ["og:url"]: "https://example.com/foo",
+        ["og:image:width"]: "300",
+        ["og:image:height"]: "200",
+        ["og:image"]: "https://example.com/foo.png",
+      },
+    ]);
+  });
+
+  test("fetchOgpFromMd-custom-reg", () => {
+    return expect(
+      fetchOgpFromMd(testMdText, /^@(https:\/\/.*?) *?$/gims)
+    ).resolves.toStrictEqual([
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/bar.html",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
+        "og:description": "bardescription",
+        "og:image": "https://example.com/bar.png",
+        "og:image:height": "200",
+        "og:image:width": "300",
+        "og:locale": "barlocale",
+        "og:title": "bartitle",
+        "og:type": "bartype",
+        "og:url": "https://example.com/bar",
+      },
+    ]);
+  });
+
+  test("fetchOgp", () => {
     return expect(
       fetchOgp(["https://takahirohimi.github.io/ogp-fetcher/"])
     ).resolves.toStrictEqual([
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -20,7 +74,7 @@ describe("test", () => {
     ]);
   });
 
-  test("fetch ogp　non-existent URL", () => {
+  test("fetchOgp-non-existent-URL", () => {
     return expect(
       fetchOgp([
         "https://takahirohimi.github.io/ogp-fetcher/non-existent-page.html",
@@ -32,7 +86,7 @@ describe("test", () => {
     ]);
   });
 
-  test("fetch multiple ogp", () => {
+  test("fetchOgp-multiple", () => {
     return expect(
       fetchOgp([
         "https://takahirohimi.github.io/ogp-fetcher/",
@@ -41,6 +95,7 @@ describe("test", () => {
     ).resolves.toStrictEqual([
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -52,6 +107,7 @@ describe("test", () => {
       },
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
         ["og:title"]: "footitle",
         ["og:description"]: "foodescription",
         ["og:locale"]: "foolocale",
@@ -64,7 +120,7 @@ describe("test", () => {
     ]);
   });
 
-  test("fetch multiple ogp contains a non-existent URL", () => {
+  test("fetchOgp-multiple-contains-non-existent-URL", () => {
     return expect(
       fetchOgp([
         "https://takahirohimi.github.io/ogp-fetcher/",
@@ -74,6 +130,7 @@ describe("test", () => {
     ).resolves.toStrictEqual([
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -85,6 +142,7 @@ describe("test", () => {
       },
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
         ["og:title"]: "footitle",
         ["og:description"]: "foodescription",
         ["og:locale"]: "foolocale",
@@ -100,9 +158,12 @@ describe("test", () => {
     ]);
   });
 
-  test("parse ogp", () => {
-    return expect(parseOgp([testHtmlTextIndex])).toStrictEqual([
+  test("parseOgp", () => {
+    return expect(
+      parseOgp([{ url: "https://example.com", html: testHtmlTextIndex }])
+    ).toStrictEqual([
       {
+        ["icon"]: "https://example.com/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -115,38 +176,45 @@ describe("test", () => {
     ]);
   });
 
-  test("parse multiple ogp", () => {
-    return expect(parseOgp([testHtmlTextIndex, testHtmlTextFoo])).toStrictEqual(
-      [
-        {
-          ["og:title"]: "title",
-          ["og:description"]: "description",
-          ["og:locale"]: "locale",
-          ["og:type"]: "type",
-          ["og:url"]: "https://example.com",
-          ["og:image:width"]: "200",
-          ["og:image:height"]: "100",
-          ["og:image"]: "https://example.com/image.png",
-        },
-        {
-          ["og:title"]: "footitle",
-          ["og:description"]: "foodescription",
-          ["og:locale"]: "foolocale",
-          ["og:type"]: "footype",
-          ["og:url"]: "https://example.com/foo",
-          ["og:image:width"]: "300",
-          ["og:image:height"]: "200",
-          ["og:image"]: "https://example.com/foo.png",
-        },
-      ]
-    );
+  test("parseOgp-multiple", () => {
+    return expect(
+      parseOgp([
+        { url: "https://example.com", html: testHtmlTextIndex },
+        { url: "", html: testHtmlTextFoo },
+      ])
+    ).toStrictEqual([
+      {
+        ["icon"]: "https://example.com/image/favicon.ico",
+        ["og:title"]: "title",
+        ["og:description"]: "description",
+        ["og:locale"]: "locale",
+        ["og:type"]: "type",
+        ["og:url"]: "https://example.com",
+        ["og:image:width"]: "200",
+        ["og:image:height"]: "100",
+        ["og:image"]: "https://example.com/image.png",
+      },
+      {
+        ["icon"]: "/image/favicon.ico",
+        ["og:title"]: "footitle",
+        ["og:description"]: "foodescription",
+        ["og:locale"]: "foolocale",
+        ["og:type"]: "footype",
+        ["og:url"]: "https://example.com/foo",
+        ["og:image:width"]: "300",
+        ["og:image:height"]: "200",
+        ["og:image"]: "https://example.com/foo.png",
+      },
+    ]);
   });
 
-  test("ogp filter", () => {
+  test("ogpFilter", () => {
     const dom = new JSDOM(testHtmlTextIndex);
     const meta = dom.window.document.head.querySelectorAll("meta");
 
-    return expect(ogpFilter(meta)).toStrictEqual({
+    return expect(
+      ogpFilter({ url: "https://example.com", elements: Array.from(meta) })
+    ).toStrictEqual({
       ["og:title"]: "title",
       ["og:description"]: "description",
       ["og:locale"]: "locale",
@@ -157,7 +225,62 @@ describe("test", () => {
       ["og:image"]: "https://example.com/image.png",
     });
   });
+
+  test("createURL", () => {
+    return expect(
+      createFaviconSrcURL("https://example.com/foo/bar", "/image/icon.png")
+    ).toBe("https://example.com/image/icon.png");
+  });
+
+  test("createURL", () => {
+    return expect(
+      createFaviconSrcURL("https://example.com/foo/bar", "image/icon.png")
+    ).toBe("https://example.com/foo/image/icon.png");
+  });
+
+  test("createURL", () => {
+    return expect(
+      createFaviconSrcURL("https://example.com/foo/bar", "icon.png")
+    ).toBe("https://example.com/foo/icon.png");
+  });
+
+  test("createURL", () => {
+    return expect(
+      createFaviconSrcURL(
+        "https://example.com/foo/bar",
+        "https://example.hoge.com/image/icon.png"
+      )
+    ).toBe("https://example.hoge.com/image/icon.png");
+  });
+
+  test("createURL", () => {
+    return expect(
+      createFaviconSrcURL(
+        "https://example.com/foo/bar",
+        "//example.hoge.com/image/icon.png"
+      )
+    ).toBe("https://example.hoge.com/image/icon.png");
+  });
+
+  test("createURL", () => {
+    return expect(createFaviconSrcURL("", "foo")).toBe("foo");
+  });
 });
+
+const testMdText = `
+# Test
+
+## Index
+
+<https://takahirohimi.github.io/ogp-fetcher/>  
+
+**Foo**
+<https://takahirohimi.github.io/ogp-fetcher/foo.html>
+
+### Bar
+@https://takahirohimi.github.io/ogp-fetcher/bar.html
+
+`;
 
 const testHtmlTextIndex = `
 <html lang="ja">
@@ -171,6 +294,7 @@ const testHtmlTextIndex = `
     <meta property="og:image:width" content="200" />
     <meta property="og:image:height" content="100" />
     <meta property="og:image" content="https://example.com/image.png" />
+    <link rel="icon" href="/image/favicon.ico">
     <title>Hello World</title>
   </head>
   <body>
@@ -191,6 +315,7 @@ const testHtmlTextFoo = `
     <meta property="og:image:width" content="300" />
     <meta property="og:image:height" content="200" />
     <meta property="og:image" content="https://example.com/foo.png" />
+    <link rel="shortcut icon" href="/image/favicon.ico">
     <title>foo</title>
   </head>
   <body>

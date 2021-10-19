@@ -27,6 +27,7 @@ export const fetchOgp = async (
   });
 
   const responses = await Promise.all(fetches);
+
   const targets = responses.reduce(
     (prev: { url: string; html?: string }[], res, i) => {
       const url = targetUrls[i] ?? "";
@@ -56,8 +57,9 @@ export const parseOgp = (htmlList: string[]) => {
   const ogps = htmlList.map((html) => {
     const dom = new JSDOM(html);
     const meta = dom.window.document.head.querySelectorAll("meta");
+    const link = dom.window.document.head.querySelectorAll("link");
 
-    const ogps = ogpFilter(meta);
+    const ogps = ogpFilter([...Array.from(meta), ...Array.from(link)]);
 
     return ogps;
   });
@@ -70,14 +72,21 @@ export const parseOgp = (htmlList: string[]) => {
  * @param metaElements filter target ogp list object
  * @returns ogp object
  */
-export const ogpFilter = (metaElements: NodeListOf<HTMLMetaElement>) => {
-  const ogps = [...Array(metaElements.length).keys()].reduce(
+export const ogpFilter = (elements: (HTMLMetaElement | HTMLLinkElement)[]) => {
+  const ogps = [...Array(elements.length).keys()].reduce(
     (prev: { [property: string]: string }, i) => {
-      const property = metaElements.item(i).getAttribute("property")?.trim();
-      if (!property) return prev;
-      const content = metaElements.item(i).getAttribute("content");
-
-      return { ...prev, ...{ [property]: content ?? "" } };
+      if (elements[i]?.tagName === "META") {
+        const property = elements[i]?.getAttribute("property")?.trim();
+        if (!property) return prev;
+        const content = elements[i]?.getAttribute("content");
+        return { ...prev, ...{ [property]: content ?? "" } };
+      } else {
+        const rel = elements[i]?.getAttribute("rel");
+        if (!rel || !["icon", "shortcut icon"].includes(rel)) return prev;
+        const href = elements[i]?.getAttribute("href");
+        if (!href) return prev;
+        return { ...prev, ...{ ["icon"]: href } };
+      }
     },
     {}
   );

@@ -1,13 +1,14 @@
 import { JSDOM } from "jsdom";
 import fetchOgp, { ogpFilter, parseOgp } from "../src/fetchOgp";
 
-describe("test", () => {
-  test("fetch ogp", () => {
+describe("src/fetchOgp", () => {
+  test("fetchOgp", () => {
     return expect(
       fetchOgp(["https://takahirohimi.github.io/ogp-fetcher/"])
     ).resolves.toStrictEqual([
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -20,7 +21,7 @@ describe("test", () => {
     ]);
   });
 
-  test("fetch ogp　non-existent URL", () => {
+  test("fetchOgp-non-existent-URL", () => {
     return expect(
       fetchOgp([
         "https://takahirohimi.github.io/ogp-fetcher/non-existent-page.html",
@@ -32,7 +33,7 @@ describe("test", () => {
     ]);
   });
 
-  test("fetch multiple ogp", () => {
+  test("fetchOgp-multiple", () => {
     return expect(
       fetchOgp([
         "https://takahirohimi.github.io/ogp-fetcher/",
@@ -41,6 +42,7 @@ describe("test", () => {
     ).resolves.toStrictEqual([
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -52,6 +54,7 @@ describe("test", () => {
       },
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["icon"]: "/image/favicon.ico",
         ["og:title"]: "footitle",
         ["og:description"]: "foodescription",
         ["og:locale"]: "foolocale",
@@ -64,7 +67,7 @@ describe("test", () => {
     ]);
   });
 
-  test("fetch multiple ogp contains a non-existent URL", () => {
+  test("fetchOgp-multiple-contains-non-existent-URL", () => {
     return expect(
       fetchOgp([
         "https://takahirohimi.github.io/ogp-fetcher/",
@@ -74,6 +77,7 @@ describe("test", () => {
     ).resolves.toStrictEqual([
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "/image/favicon.ico",
         ["og:title"]: "title",
         ["og:description"]: "description",
         ["og:locale"]: "locale",
@@ -85,6 +89,7 @@ describe("test", () => {
       },
       {
         url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["icon"]: "/image/favicon.ico",
         ["og:title"]: "footitle",
         ["og:description"]: "foodescription",
         ["og:locale"]: "foolocale",
@@ -100,7 +105,7 @@ describe("test", () => {
     ]);
   });
 
-  test("parse ogp", () => {
+  test("parseOgp", () => {
     return expect(parseOgp([testHtmlTextIndex])).toStrictEqual([
       {
         ["og:title"]: "title",
@@ -115,7 +120,7 @@ describe("test", () => {
     ]);
   });
 
-  test("parse multiple ogp", () => {
+  test("parseOgp-multiple", () => {
     return expect(parseOgp([testHtmlTextIndex, testHtmlTextFoo])).toStrictEqual(
       [
         {
@@ -142,11 +147,11 @@ describe("test", () => {
     );
   });
 
-  test("ogp filter", () => {
+  test("ogpFilter", () => {
     const dom = new JSDOM(testHtmlTextIndex);
     const meta = dom.window.document.head.querySelectorAll("meta");
 
-    return expect(ogpFilter(meta)).toStrictEqual({
+    return expect(ogpFilter(Array.from(meta))).toStrictEqual({
       ["og:title"]: "title",
       ["og:description"]: "description",
       ["og:locale"]: "locale",

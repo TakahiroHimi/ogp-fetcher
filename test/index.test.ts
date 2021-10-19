@@ -36,6 +36,25 @@ describe("src/fetchOgp", () => {
     ]);
   });
 
+  test("fetchOgpFromMd-custom-reg", () => {
+    return expect(
+      fetchOgpFromMd(testMdText, /^@(https:\/\/.*?) *?$/gims)
+    ).resolves.toStrictEqual([
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/bar.html",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
+        "og:description": "bardescription",
+        "og:image": "https://example.com/bar.png",
+        "og:image:height": "200",
+        "og:image:width": "300",
+        "og:locale": "barlocale",
+        "og:title": "bartitle",
+        "og:type": "bartype",
+        "og:url": "https://example.com/bar",
+      },
+    ]);
+  });
+
   test("fetchOgp", () => {
     return expect(
       fetchOgp(["https://takahirohimi.github.io/ogp-fetcher/"])
@@ -257,6 +276,9 @@ const testMdText = `
 
 **Foo**
 <https://takahirohimi.github.io/ogp-fetcher/foo.html>
+
+### Bar
+@https://takahirohimi.github.io/ogp-fetcher/bar.html
 
 `;
 

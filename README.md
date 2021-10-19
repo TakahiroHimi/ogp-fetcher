@@ -26,31 +26,28 @@ fetch();
 //console
 // [
 //   {
-//     url: "https://github.com/",
-//     "fb:app_id": "1401488693436528",
-//     "og:image":
-//       "https://github.githubassets.com/images/modules/site/social-cards/github-social.png",
-//     "og:image:alt":
-//       "GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...",
-//     "og:site_name": "GitHub",
-//     "og:type": "object",
-//     "og:title": "GitHub: Where the world builds software",
-//     "og:url": "https://github.com/",
-//     "og:description":
-//       "GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...",
-//     "og:image:type": "image/png",
-//     "og:image:width": "1200",
-//     "og:image:height": "620",
-//     icon: "https://github.githubassets.com/favicons/favicon.svg",
+//     url: 'https://github.com',
+//     'fb:app_id': '1401488693436528',
+//     'og:image': 'https://github.githubassets.com/images/modules/site/social-cards/github-social.png',
+//     'og:image:alt': 'GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...',
+//     'og:site_name': 'GitHub',
+//     'og:type': 'object',
+//     'og:title': 'GitHub: Where the world builds software',
+//     'og:url': 'https://github.com/',
+//     'og:description': 'GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...',
+//     'og:image:type': 'image/png',
+//     'og:image:width': '1200',
+//     'og:image:height': '620',
+//     icon: 'https://github.githubassets.com/favicons/favicon.svg'
 //   },
 //   {
-//     url: "https://facebook.com",
-//     "og:site_name": "Facebook",
-//     "og:url": "https://www.facebook.com/",
-//     "og:image": "https://www.facebook.com/images/fb_icon_325x325.png",
-//     "og:locale": "ja_JP",
-//     icon: "https://static.xx.fbcdn.net/rsrc.php/yv/r/B8BxsscfVBr.ico",
-//   },
+//     url: 'https://facebook.com',
+//     'og:site_name': 'Facebook',
+//     'og:url': 'https://www.facebook.com/',
+//     'og:image': 'https://www.facebook.com/images/fb_icon_325x325.png',
+//     'og:locale': 'ja_JP',
+//     icon: 'https://static.xx.fbcdn.net/rsrc.php/yv/r/B8BxsscfVBr.ico'
+//   }
 // ]
 ```
 
@@ -87,16 +84,16 @@ console.log(withRelativeIconPath);
 // console
 // [
 //   {
-//     "og:title": "title",
-//     "og:description": "description",
-//     "og:locale": "locale",
-//     "og:type": "type",
-//     "og:url": "https://example.com",
-//     "og:image:width": "200",
-//     "og:image:height": "100",
-//     "og:image": "https://example.com/image.png",
-//     icon: "/image/favicon.ico",
-//   },
+//     'og:title': 'title',
+//     'og:description': 'description',
+//     'og:locale': 'locale',
+//     'og:type': 'type',
+//     'og:url': 'https://example.com',
+//     'og:image:width': '200',
+//     'og:image:height': '100',
+//     'og:image': 'https://example.com/image.png',
+//     icon: '/image/favicon.ico'
+//   }
 // ]
 
 const withAbsoluteIconPath = parseOgp([
@@ -106,16 +103,16 @@ console.log(withAbsoluteIconPath);
 // console
 // [
 //   {
-//     "og:title": "title",
-//     "og:description": "description",
-//     "og:locale": "locale",
-//     "og:type": "type",
-//     "og:url": "https://example.com",
-//     "og:image:width": "200",
-//     "og:image:height": "100",
-//     "og:image": "https://example.com/image.png",
-//     icon: "https://example.com/image/favicon.ico",
-//   },
+//     'og:title': 'title',
+//     'og:description': 'description',
+//     'og:locale': 'locale',
+//     'og:type': 'type',
+//     'og:url': 'https://example.com',
+//     'og:image:width': '200',
+//     'og:image:height': '100',
+//     'og:image': 'https://example.com/image.png',
+//     icon: 'https://example.com/image/favicon.ico'
+//   }
 // ]
 ```
 
@@ -149,35 +146,32 @@ fetch();
 // console
 // [
 //   {
-//     url: "https://github.com/",
-//     "fb:app_id": "1401488693436528",
-//     "og:image":
-//       "https://github.githubassets.com/images/modules/site/social-cards/github-social.png",
-//     "og:image:alt":
-//       "GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...",
-//     "og:site_name": "GitHub",
-//     "og:type": "object",
-//     "og:title": "GitHub: Where the world builds software",
-//     "og:url": "https://github.com/",
-//     "og:description":
-//       "GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...",
-//     "og:image:type": "image/png",
-//     "og:image:width": "1200",
-//     "og:image:height": "620",
-//     icon: "https://github.githubassets.com/favicons/favicon.svg",
+//     url: 'https://github.com',
+//     'fb:app_id': '1401488693436528',
+//     'og:image': 'https://github.githubassets.com/images/modules/site/social-cards/github-social.png',
+//     'og:image:alt': 'GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...',
+//     'og:site_name': 'GitHub',
+//     'og:type': 'object',
+//     'og:title': 'GitHub: Where the world builds software',
+//     'og:url': 'https://github.com/',
+//     'og:description': 'GitHub is where over 65 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...',
+//     'og:image:type': 'image/png',
+//     'og:image:width': '1200',
+//     'og:image:height': '620',
+//     icon: 'https://github.githubassets.com/favicons/favicon.svg'
 //   },
 //   {
-//     url: "https://facebook.com",
-//     "og:site_name": "Facebook",
-//     "og:url": "https://www.facebook.com/",
-//     "og:image": "https://www.facebook.com/images/fb_icon_325x325.png",
-//     "og:locale": "ja_JP",
-//     icon: "https://static.xx.fbcdn.net/rsrc.php/yv/r/B8BxsscfVBr.ico",
-//   },
+//     url: 'https://facebook.com',
+//     'og:site_name': 'Facebook',
+//     'og:url': 'https://www.facebook.com/',
+//     'og:image': 'https://www.facebook.com/images/fb_icon_325x325.png',
+//     'og:locale': 'ja_JP',
+//     icon: 'https://static.xx.fbcdn.net/rsrc.php/yv/r/B8BxsscfVBr.ico'
+//   }
 // ]
 
 const fetchCustomReg = async () => {
-  const ogp = await fetchOgpFromMd(md, /^@(https:\/\/.*?)> *?$/gims);
+  const ogp = await fetchOgpFromMd(md, /^@(https:\/\/.*?) *?$/gims);
   console.log(ogp);
 };
 
@@ -185,9 +179,9 @@ fetchCustomReg();
 // console
 // [
 //   {
-//     url: "https://www.npmjs.com/",
-//     "og:image": "https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png",
-//     icon: "https://static.npmjs.com/da3ab40fb0861d15c83854c29f5f2962.png",
-//   },
+//     url: 'https://www.npmjs.com/',
+//     'og:image': 'https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png',
+//     icon: 'https://static.npmjs.com/da3ab40fb0861d15c83854c29f5f2962.png'
+//   }
 // ]
 ```

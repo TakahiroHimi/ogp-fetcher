@@ -7,9 +7,33 @@ export type OGPFetchResult = {
 }[];
 
 /**
- * fetch and parse ogp from targetUrls
- * @param targetUrls fetch target url list
- * @returns ogp list
+ * Get the OGP of the link from the md file.
+ * @param md md file test data
+ * @param reg Regular expression to get the link text of an md file
+ * @returns OGP list
+ */
+export const fetchOgpFromMd = async (
+  md: string,
+  reg = /^<(https:\/\/.*?)> *?$/gims
+): Promise<OGPFetchResult> => {
+  const regResult = md.matchAll(reg);
+
+  const urls = regResult
+    ? Array.from(regResult).reduce((prev: string[], reg) => {
+        if (!reg[1]) return prev;
+        return [...prev, reg[1]];
+      }, [])
+    : undefined;
+
+  if (!urls) return [];
+
+  return fetchOgp(urls);
+};
+
+/**
+ * Fetching HTML from the target URL and parsing OGP data
+ * @param targetUrls List of target URLs
+ * @returns OGP list
  */
 export const fetchOgp = async (
   targetUrls: string[]
@@ -49,9 +73,9 @@ export const fetchOgp = async (
 };
 
 /**
- * parse ogp from targets
+ * Parsing OGP data from the target HTML
  * @param targets List of html to parse. If you want to get the URL of the icon as an absolute path, set url.
- * @returns ogp list
+ * @returns OGP list
  */
 export const parseOgp = (targets: { url?: string; html: string }[]) => {
   const ogps = targets.map((target) => {
@@ -71,9 +95,9 @@ export const parseOgp = (targets: { url?: string; html: string }[]) => {
 };
 
 /**
- * return ogp object
- * @param target filter target ogp list object
- * @returns ogp object
+ * Filtering OGP data from an HTML element list
+ * @param target List of HTML elements to be targeted by the filter
+ * @returns OGP object
  */
 export const ogpFilter = (target: {
   url?: string;
@@ -110,10 +134,10 @@ export const ogpFilter = (target: {
 };
 
 /**
- * create url for favicon src
- * @param url target url
- * @param href favicon link tag's href
- * @returns url for favicon image src
+ * Create a URL for the favicon image src
+ * @param url URL of the favicon location
+ * @param href The href of the favicon set in the link tag
+ * @returns URL for the favicon image src
  */
 export const createFaviconSrcURL = (url: string, href: string) => {
   try {

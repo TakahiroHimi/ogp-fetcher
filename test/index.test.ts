@@ -1,11 +1,41 @@
 import { JSDOM } from "jsdom";
 import fetchOgp, {
   createFaviconSrcURL,
+  fetchOgpFromMd,
   ogpFilter,
   parseOgp,
 } from "../src/fetchOgp";
 
 describe("src/fetchOgp", () => {
+  test("fetchOgpFromMd", () => {
+    return expect(fetchOgpFromMd(testMdText)).resolves.toStrictEqual([
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
+        ["og:title"]: "title",
+        ["og:description"]: "description",
+        ["og:locale"]: "locale",
+        ["og:type"]: "type",
+        ["og:url"]: "https://example.com",
+        ["og:image:width"]: "200",
+        ["og:image:height"]: "100",
+        ["og:image"]: "https://example.com/image.png",
+      },
+      {
+        url: "https://takahirohimi.github.io/ogp-fetcher/foo.html",
+        ["icon"]: "https://takahirohimi.github.io/image/favicon.ico",
+        ["og:title"]: "footitle",
+        ["og:description"]: "foodescription",
+        ["og:locale"]: "foolocale",
+        ["og:type"]: "footype",
+        ["og:url"]: "https://example.com/foo",
+        ["og:image:width"]: "300",
+        ["og:image:height"]: "200",
+        ["og:image"]: "https://example.com/foo.png",
+      },
+    ]);
+  });
+
   test("fetchOgp", () => {
     return expect(
       fetchOgp(["https://takahirohimi.github.io/ogp-fetcher/"])
@@ -217,6 +247,18 @@ describe("src/fetchOgp", () => {
     return expect(createFaviconSrcURL("", "foo")).toBe("foo");
   });
 });
+
+const testMdText = `
+# Test
+
+## Index
+
+<https://takahirohimi.github.io/ogp-fetcher/>  
+
+**Foo**
+<https://takahirohimi.github.io/ogp-fetcher/foo.html>
+
+`;
 
 const testHtmlTextIndex = `
 <html lang="ja">

@@ -7,7 +7,7 @@ export type OGPFetchResult = {
 }[];
 
 /**
- *
+ * fetch and parse ogp from targetUrls
  * @param targetUrls fetch target url list
  * @returns ogp list
  */
@@ -41,7 +41,7 @@ export const fetchOgp = async (
   const ogps = targets.map((target) => {
     return {
       url: target.url,
-      ...parseOgp([target.html ?? ""])[0],
+      ...parseOgp([{ url: target.url, html: target.html ?? "" }])[0],
     };
   });
 
@@ -49,17 +49,20 @@ export const fetchOgp = async (
 };
 
 /**
- *
- * @param htmlList fetch target url text list
+ * parse ogp from targets
+ * @param targets List of html to parse. If you want to get the URL of the icon as an absolute path, set url.
  * @returns ogp list
  */
-export const parseOgp = (htmlList: string[]) => {
-  const ogps = htmlList.map((html) => {
-    const dom = new JSDOM(html);
+export const parseOgp = (targets: { url?: string; html: string }[]) => {
+  const ogps = targets.map((target) => {
+    const dom = new JSDOM(target.html);
     const meta = dom.window.document.head.querySelectorAll("meta");
     const link = dom.window.document.head.querySelectorAll("link");
 
-    const ogps = ogpFilter([...Array.from(meta), ...Array.from(link)]);
+    const ogps = ogpFilter({
+      url: target.url,
+      elements: [...Array.from(meta), ...Array.from(link)],
+    });
 
     return ogps;
   });
@@ -68,29 +71,57 @@ export const parseOgp = (htmlList: string[]) => {
 };
 
 /**
- *
- * @param metaElements filter target ogp list object
+ * return ogp object
+ * @param target filter target ogp list object
  * @returns ogp object
  */
-export const ogpFilter = (elements: (HTMLMetaElement | HTMLLinkElement)[]) => {
-  const ogps = [...Array(elements.length).keys()].reduce(
+export const ogpFilter = (target: {
+  url?: string;
+  elements: (HTMLMetaElement | HTMLLinkElement)[];
+}) => {
+  const ogps = [...Array(target.elements.length).keys()].reduce(
     (prev: { [property: string]: string }, i) => {
-      if (elements[i]?.tagName === "META") {
-        const property = elements[i]?.getAttribute("property")?.trim();
+      const element = target.elements[i];
+      if (!element) return prev;
+
+      if (element.tagName === "META") {
+        const property = element.getAttribute("property")?.trim();
         if (!property) return prev;
-        const content = elements[i]?.getAttribute("content");
+        const content = element.getAttribute("content");
         return { ...prev, ...{ [property]: content ?? "" } };
-      } else {
-        const rel = elements[i]?.getAttribute("rel");
+      } else if (element.tagName === "LINK") {
+        const rel = element.getAttribute("rel");
         if (!rel || !["icon", "shortcut icon"].includes(rel)) return prev;
-        const href = elements[i]?.getAttribute("href");
+        const href = element.getAttribute("href");
         if (!href) return prev;
-        return { ...prev, ...{ ["icon"]: href } };
+        return {
+          ...prev,
+          ...{
+            ["icon"]: target.url ? createFaviconSrcURL(target.url, href) : href,
+          },
+        };
       }
+
+      return prev;
     },
     {}
   );
   return ogps;
+};
+
+/**
+ * create url for favicon src
+ * @param url target url
+ * @param href favicon link tag's href
+ * @returns url for favicon image src
+ */
+export const createFaviconSrcURL = (url: string, href: string) => {
+  try {
+    const result = new URL(href, url);
+    return result.toString();
+  } catch {
+    return href;
+  }
 };
 
 export default fetchOgp;
